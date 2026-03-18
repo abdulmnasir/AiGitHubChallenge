@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Fun Facts Generator</title>
+<p>Built by Muhammad Abdulrahman</p>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 50px;
+    transition: background 0.5s ease;
+}
+
+.container {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    width: 60%;
+    margin: auto;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    background: black;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #333;
+}
+
+#fact {
+    font-size: 20px;
+    margin: 20px 0;
+    min-height: 60px;
+}
+
+.add-fact-section {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 2px solid #eee;
+}
+
+.add-fact-section h3 {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.input-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+#userFactInput {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+}
+
+#userFactInput:focus {
+    outline: none;
+    border-color: #333;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+button.add-btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    background: #28a745;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button.add-btn:hover {
+    background: #218838;
+}
+
+.success-message {
+    color: #28a745;
+    font-size: 14px;
+    margin-top: 10px;
+    display: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>🤖 AI Fun Fact Generator</h1>
+    <p id="fact">Click the button to get a fun fact!</p>
+    <button onclick="generateFact()">Generate Fact</button>
+
+    <div class="add-fact-section">
+        <h3>📝 Add Your Own Fact</h3>
+        <div class="input-group">
+            <input type="text" id="userFactInput" placeholder="Enter a fun fact..." maxlength="200">
+            <button class="add-btn" onclick="addUserFact()">Add Fact</button>
+        </div>
+        <div class="success-message" id="successMessage">✓ Fact added successfully!</div>
+    </div>
+</div>
+
+<script>
+let facts = [
+"Octopuses have three hearts.",
+"Honey never spoils. Jars found in tombs are still edible.",
+"Bananas are technically berries.",
+"Sharks existed before trees.",
+"Your brain uses about 20% of your body’s energy.",
+"A day on Venus is longer than a year on Venus.",
+"Wombats have cube-shaped poop.",
+"Water can boil and freeze at the same time.",
+"Some turtles can breathe through their butts.",
+"Space is completely silent.",
+"Nigeria is home to over 500 Languages making it the most linguistically diverse country in the world.",
+"This project was built using GitHub Copilot.",
+];
+
+function generateFact() {
+    const factText = document.getElementById("fact");
+    const randomIndex = Math.floor(Math.random() * facts.length);
+    const newFact = facts[randomIndex];
+
+    // Typing effect
+    factText.innerHTML = "";
+    let i = 0;
+    let typing = setInterval(() => {
+        factText.innerHTML += newFact.charAt(i);
+        i++;
+        if (i >= newFact.length) clearInterval(typing);
+    }, 30);
+
+    // Change background color randomly
+    document.body.style.background = 
+        "hsl(" + Math.random() * 360 + ", 70%, 85%)";
+}
+
+function addUserFact() {
+    const userFactInput = document.getElementById("userFactInput");
+    const newFact = userFactInput.value.trim();
+    const successMessage = document.getElementById("successMessage");
+
+    if (newFact === "") {
+        alert("Please enter a fun fact!");
+        return;
+    }
+
+    if (newFact.length < 10) {
+        alert("Fact should be at least 10 characters long!");
+        return;
+    }
+
+    // Add fact to the array
+    facts.push(newFact);
+
+    // Save to localStorage
+    const savedFacts = localStorage.getItem("userFacts");
+    let userFacts = savedFacts ? JSON.parse(savedFacts) : [];
+    userFacts.push(newFact);
+    localStorage.setItem("userFacts", JSON.stringify(userFacts));
+
+    // Clear input
+    userFactInput.value = "";
+
+    // Show success message
+    successMessage.style.display = "block";
+    setTimeout(() => {
+        successMessage.style.display = "none";
+    }, 2000);
+}
+
+// Allow Enter key to submit
+document.addEventListener("DOMContentLoaded", function() {
+    const userFactInput = document.getElementById("userFactInput");
+    userFactInput.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            addUserFact();
+        }
+    });
+});
+
+// Load user-added facts from localStorage
+window.addEventListener("load", function() {
+    const savedFacts = localStorage.getItem("userFacts");
+    if (savedFacts) {
+        facts = facts.concat(JSON.parse(savedFacts));
+    }
+});
+</script>
+
+</body>
+</html>
